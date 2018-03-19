@@ -1,0 +1,115 @@
+commit f28bc5b70817e144cf72518cf24d6e451e5e3326
+Author: Tuukka Korhonen <tuukka.korhonen@cs.helsinki.fi>
+Date:   Mon Mar 19 11:33:27 2018 +0200
+
+    hauska juttu että git päätti että poistin file2 ja muutin file1 koska file1 ja file2 oli samat
+
+ tiedostoja/file1  | 0
+ tiedostoja/file2  | 0
+ tiedostoja/file22 | 0
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+
+commit cc584347c50b8f07c36dd0703b45f8c14e51b472
+Author: Tuukka Korhonen <tuukka.korhonen@cs.helsinki.fi>
+Date:   Mon Mar 19 11:30:26 2018 +0200
+
+    files
+
+ tiedostoja/file1 | 0
+ tiedostoja/file2 | 0
+ tiedostoja/file3 | 0
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+
+commit dc485a9f8843f5dc128f2cc33f229a68691c34b0
+Author: Tuukka Korhonen <tuukka.korhonen@cs.helsinki.fi>
+Date:   Mon Mar 19 11:26:56 2018 +0200
+
+    muutoksia
+
+ eka.txt    | 3 ++-
+ kolmas.txt | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 8487f1a1af4c5bd5cc4594ec1f215b313cdf6ca5
+Author: Tuukka Korhonen <tuukka.korhonen@cs.helsinki.fi>
+Date:   Mon Mar 19 11:25:41 2018 +0200
+
+    rename
+
+ eka.txt      | 5 +++++
+ tiedosto.txt | 5 -----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 0fa7e36c730f1f5623ea43d76440d96d9901cea8
+Author: Tuukka Korhonen <tuukka.korhonen@cs.helsinki.fi>
+Date:   Mon Mar 19 11:24:54 2018 +0200
+
+    poisto
+
+ toinen.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 77b0acd681092734029802601b928e26bf72ddc8
+Author: Tuukka Korhonen <tuukka.korhonen@cs.helsinki.fi>
+Date:   Mon Mar 19 11:23:36 2018 +0200
+
+    muutos
+
+ tiedosto.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit df9b070ada69162f48c5afc1be94cc636d2128eb
+Author: Tuukka Korhonen <tuukka.korhonen@cs.helsinki.fi>
+Date:   Mon Mar 19 11:22:37 2018 +0200
+
+    paljon tekstiä
+
+ tiedosto.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+commit 0adb3cbd2b29b396ca0f4ab845ba6eb9dcdb7cdf
+Author: Tuukka Korhonen <tuukka.korhonen@cs.helsinki.fi>
+Date:   Mon Mar 19 11:19:15 2018 +0200
+
+    stuff
+
+ stuff/jokin.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 46da8b81eeca93a86e610e7ed902fa3cc104dd8b
+Author: Tuukka Korhonen <tuukka.korhonen@cs.helsinki.fi>
+Date:   Mon Mar 19 11:18:27 2018 +0200
+
+    toinen ja kolmas
+
+ kolmas.txt | 1 +
+ toinen.txt | 1 +
+ 2 files changed, 2 insertions(+)
+
+commit e61851d777e593d4602243bbf9a09d68fd83ecec
+Author: Tuukka Korhonen <tuukka.korhonen@cs.helsinki.fi>
+Date:   Mon Mar 19 11:17:52 2018 +0200
+
+    kolmas
+
+ kolmas.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit d960c1e5926dd0cd7c10df8722c0fdad84e24ad4
+Author: Tuukka Korhonen <tuukka.korhonen@cs.helsinki.fi>
+Date:   Mon Mar 19 11:16:14 2018 +0200
+
+    muutos ja lisäys
+
+ tiedosto.txt | 2 +-
+ toinen.txt   | 0
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+
+commit de57bb0a2792f7fcd58baeb98f5082eb0a27d65d
+Author: Tuukka Korhonen <tuukka.korhonen@cs.helsinki.fi>
+Date:   Mon Mar 19 11:14:37 2018 +0200
+
+    tiedosto.txt luotu
+
+ tiedosto.txt | 1 +
+ 1 file changed, 1 insertion(+)
