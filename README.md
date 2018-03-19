@@ -6,4 +6,4 @@ Tavallista tekstiä joka sisältää **lihavoituja** ja *kursivoituja* osuuksia
 
 [gitlog.txt](https://github.com/Laakeri/otm-harjoitustyo/blob/master/laskarit/viikko1/gitlog.txt)
 
-muutos
+muutosasdf
