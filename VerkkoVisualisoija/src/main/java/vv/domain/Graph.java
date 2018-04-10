@@ -7,7 +7,7 @@ public class Graph {
         public final String v1, v2;
         Edge(String v1, String v2) {
             assert !v1.equals(v2);
-            if (v1.compareTo(v2)>0) {
+            if (v1.compareTo(v2)<0) {
                 this.v1 = v1;
                 this.v2 = v2;
             } else {
