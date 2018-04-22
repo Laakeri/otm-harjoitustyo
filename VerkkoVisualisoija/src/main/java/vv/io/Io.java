@@ -1,7 +1,8 @@
-package vv.domain;
+package vv.io;
 
 import java.io.FileReader;
 import java.util.Scanner;
+import vv.domain.Graph;
 
 public class Io {
     public static Graph readGraph(String filename) throws Exception {

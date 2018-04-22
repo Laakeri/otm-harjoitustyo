@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class RandPositioner implements VertexPositioner {
-    private HashMap<String, Vec2> coordinates;
-    Random random;
+    private    HashMap<String, Vec2> coordinates;
+    private final Random random;
     
     public RandPositioner() {
         random = new Random(System.currentTimeMillis());

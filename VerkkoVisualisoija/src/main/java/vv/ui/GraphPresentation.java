@@ -19,10 +19,13 @@ public class GraphPresentation {
     
     public static final double VRADIUS = 30;
     
+    private final HashMap<String, VertexPresentation> vertices;
+    private final ArrayList<EdgePresentation> edges;
+    
     private class VertexPresentation {
-        private Circle circle;
-        private Text text;
-        private Vec2 pos;
+        private final Circle circle;
+        private final Text text;
+        private final Vec2 pos;
         VertexPresentation(Vec2 pos, String label) {
             this.pos = pos;
             circle = new Circle(pos.x, pos.y, VRADIUS);
@@ -45,8 +48,8 @@ public class GraphPresentation {
     }
     
     private class EdgePresentation {
-        VertexPresentation v1, v2;
-        Line line;
+        private final VertexPresentation v1, v2;
+        private final Line line;
         EdgePresentation(VertexPresentation v1, VertexPresentation v2) {
             this.v1 = v1;
             this.v2 = v2;
@@ -58,9 +61,6 @@ public class GraphPresentation {
             group.getChildren().add(line);
         }
     }
-    
-    private HashMap<String, VertexPresentation> vertices;
-    private ArrayList<EdgePresentation> edges;
     
     private Vec2 nodeToScreen(Vec2 pos) {
         return new Vec2(VRADIUS + (width - 2 * VRADIUS) * pos.x, VRADIUS + (height - 2 * VRADIUS) * pos.y);

@@ -1,7 +1,7 @@
 package vv.utils;
 
 public class Segment2 {
-    public Vec2 p1, p2;
+    public final Vec2 p1, p2;
     public Segment2(Vec2 p1, Vec2 p2) {
         this.p1 = p1;
         this.p2 = p2;

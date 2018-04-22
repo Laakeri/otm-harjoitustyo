@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.Group;
 
 import vv.domain.Graph;
-import vv.domain.Io;
+import vv.io.Io;
 import vv.domain.RandPositioner;
 
 public class Ui extends Application {
