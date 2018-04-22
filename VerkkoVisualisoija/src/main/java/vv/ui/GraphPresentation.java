@@ -41,7 +41,7 @@ public class GraphPresentation {
     
     private Vec2 getEndPoint(Vec2 p1, Vec2 p2) {
         Segment2 sg = new Segment2(p1, p2);
-        return sg.interpolate(VRADIUS/p1.dist(p2));
+        return sg.interpolate(VRADIUS / p1.dist(p2));
     }
     
     private class EdgePresentation {
@@ -63,7 +63,7 @@ public class GraphPresentation {
     private ArrayList<EdgePresentation> edges;
     
     private Vec2 nodeToScreen(Vec2 pos) {
-        return new Vec2(VRADIUS + (width - 2*VRADIUS)*pos.x, VRADIUS + (height - 2*VRADIUS)*pos.y);
+        return new Vec2(VRADIUS + (width - 2 * VRADIUS) * pos.x, VRADIUS + (height - 2 * VRADIUS) * pos.y);
     }
     
     public GraphPresentation(Graph graph, VertexPositioner vertexPositioner, double width, double height) {

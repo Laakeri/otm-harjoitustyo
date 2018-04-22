@@ -10,7 +10,7 @@ public class Io {
         while (in.hasNext()) {
             String token = in.next();
             if (token.equals("e:")) {
-                String v1,v2;
+                String v1, v2;
                 v1 = in.next();
                 v2 = in.next();
                 graph.addEdge(v1, v2);

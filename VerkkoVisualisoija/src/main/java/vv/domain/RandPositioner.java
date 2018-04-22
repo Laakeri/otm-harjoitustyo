@@ -25,12 +25,12 @@ public class RandPositioner implements VertexPositioner {
     private double getCost(HashMap<String, Vec2> coordinates, Graph graph) {
         double value = 0;
         for (int i = 0; i < graph.vertices().size(); i++) {
-            for (int ii = i+1; ii < graph.vertices().size(); ii++) {
-                value += 1./coordinates.get(graph.vertices().get(i)).dist(coordinates.get(graph.vertices().get(ii)));
+            for (int ii = i + 1; ii < graph.vertices().size(); ii++) {
+                value += 1. / coordinates.get(graph.vertices().get(i)).dist(coordinates.get(graph.vertices().get(ii)));
             }
         }
         for (int i = 0; i < graph.edges().size(); i++) {
-            for (int ii = i+1; ii < graph.edges().size(); ii++) {
+            for (int ii = i + 1; ii < graph.edges().size(); ii++) {
                 Graph.Edge e1 = graph.edges().get(i);
                 Graph.Edge e2 = graph.edges().get(ii);
                 if (e1.hasCommonEndPoint(e2)) continue;
