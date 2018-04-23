@@ -1,4 +1,6 @@
-# Otsikko
+# OTM-harjoitustyö: Verkkovisualisoija
+
+Tarkoituksena on luoda sovellus jolla voi piirtää verkkoja helposti ja erityisesti visualisoida jo tekstimuodossa olevia verkkoja mahdollisimman yleiskatsauksellisesti.
 
 [Määrittelydokumentti](https://github.com/Laakeri/otm-harjoitustyo/blob/master/dokumentaatio/vaatimusmaarittely.md)
 
