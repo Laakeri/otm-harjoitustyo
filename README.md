@@ -7,3 +7,7 @@ Tarkoituksena on luoda sovellus jolla voi piirtää verkkoja helposti ja erityis
 [Tuntikirjanpito](https://github.com/Laakeri/otm-harjoitustyo/blob/master/dokumentaatio/tuntikirjanpito.md)
 
 [Arkkitehtuurikuvaus](https://github.com/Laakeri/otm-harjoitustyo/blob/master/dokumentaatio/arkkitehtuuri.md)
+
+## Releaset
+
+[Viikko 5](https://github.com/Laakeri/otm-harjoitustyo/releases/tag/Viikko5)
