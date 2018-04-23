@@ -83,7 +83,7 @@ public class GraphPresentation {
         }
     }
     
-    void drawToPane(Group group) {
+    void drawToGroup(Group group) {
         for (VertexPresentation vp : vertices.values()) {
             vp.addToGroup(group);
         }

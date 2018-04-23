@@ -1,12 +1,13 @@
 package vv.io;
 
+import java.io.File;
 import java.io.FileReader;
 import java.util.Scanner;
 import vv.domain.Graph;
 
 public class Io {
-    public static Graph readGraph(String filename) throws Exception {
-        Scanner in = new Scanner(new FileReader(filename));
+    public static Graph readGraph(File file) throws Exception {
+        Scanner in = new Scanner(new FileReader(file));
         Graph graph = new Graph();
         while (in.hasNext()) {
             String token = in.next();
