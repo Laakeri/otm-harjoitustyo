@@ -2,7 +2,10 @@ package vv.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -25,20 +28,60 @@ public class GraphPresentation {
     private class VertexPresentation {
         private final Circle circle;
         private final Text text;
-        private final Vec2 pos;
+        private final StackPane stack;
+        private ArrayList<EdgePresentation> incident;
+        private Vec2 pos;
+        private Vec2 dragOrgPos;
+        private Vec2 dragOrgTranslate;
         VertexPresentation(Vec2 pos, String label) {
             this.pos = pos;
-            circle = new Circle(pos.x, pos.y, VRADIUS);
+            circle = new Circle(VRADIUS);
             circle.setStroke(Color.BLACK);
             circle.setFill(Color.WHITE);
-            text = new Text(pos.x, pos.y, label);
+            text = new Text(label);
+            
+            stack = new StackPane();
+            stack.setTranslateX(pos.x - VRADIUS);
+            stack.setTranslateY(pos.y - VRADIUS);
+            stack.getChildren().addAll(circle, text);
+            
+            stack.setOnMousePressed(mouseEvent -> {
+                handlePress(mouseEvent);
+            });
+            stack.setOnMouseDragged(mouseEvent -> {
+                handleDrag(mouseEvent);
+            });
+            
+            incident = new ArrayList<>();
+        }
+        private Vec2 mouseEventPos(MouseEvent e) {
+            return new Vec2(e.getSceneX(), e.getSceneY());
+        }
+        private void handlePress(MouseEvent e) {
+            dragOrgPos = mouseEventPos(e);
+            dragOrgTranslate = new Vec2(stack.getTranslateX(), stack.getTranslateY());
+        }
+        private void handleDrag(MouseEvent e) {
+            Vec2 offset = mouseEventPos(e).sub(dragOrgPos);
+            Vec2 newTranslate = offset.add(dragOrgTranslate);
+            
+            pos = new Vec2(newTranslate.x + VRADIUS, newTranslate.y + VRADIUS);
+            
+            stack.setTranslateX(newTranslate.x);
+            stack.setTranslateY(newTranslate.y);
+            
+            for (EdgePresentation ep : incident) {
+                ep.updatePos();
+            }
         }
         public void addToGroup(Group group) {
-            group.getChildren().add(circle);
-            group.getChildren().add(text);
+            group.getChildren().add(stack);
         }
         public Vec2 pos() {
             return pos;
+        }
+        public void addIncident(EdgePresentation ep) {
+            incident.add(ep);
         }
     }
     
@@ -60,6 +103,14 @@ public class GraphPresentation {
         public void addToGroup(Group group) {
             group.getChildren().add(line);
         }
+        public void updatePos() {
+            Vec2 ep1 = getEndPoint(v1.pos, v2.pos);
+            Vec2 ep2 = getEndPoint(v2.pos, v1.pos);
+            line.setStartX(ep1.x);
+            line.setStartY(ep1.y);
+            line.setEndX(ep2.x);
+            line.setEndY(ep2.y);
+        }
     }
     
     private Vec2 nodeToScreen(Vec2 pos) {
@@ -79,16 +130,19 @@ public class GraphPresentation {
         }
         edges = new ArrayList<>();
         for (Graph.Edge edge : graph.edges()) {
-            edges.add(new EdgePresentation(vertices.get(edge.v1), vertices.get(edge.v2)));
+            EdgePresentation ep = new EdgePresentation(vertices.get(edge.v1), vertices.get(edge.v2));
+            edges.add(ep);
+            vertices.get(edge.v1).addIncident(ep);
+            vertices.get(edge.v2).addIncident(ep);
         }
     }
     
     void drawToGroup(Group group) {
-        for (VertexPresentation vp : vertices.values()) {
-            vp.addToGroup(group);
-        }
         for (EdgePresentation ep : edges) {
             ep.addToGroup(group);
+        }
+        for (VertexPresentation vp : vertices.values()) {
+            vp.addToGroup(group);
         }
     }
 }

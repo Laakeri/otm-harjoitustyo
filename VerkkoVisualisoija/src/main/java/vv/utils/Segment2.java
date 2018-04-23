@@ -15,4 +15,10 @@ public class Segment2 {
     public double length() {
         return p1.dist(p2);
     }
+    public double dist(Vec2 p) {
+        Vec2 z = p.sub(p1).div(p2.sub(p1));
+        if (z.x < 0) return p1.dist(p);
+        if (z.x > 1) return p2.dist(p);
+        return Math.abs(z.y) * length();
+    }
 }

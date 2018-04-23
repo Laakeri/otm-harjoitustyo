@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class RandPositioner implements VertexPositioner {
-    private    HashMap<String, Vec2> coordinates;
+    private HashMap<String, Vec2> coordinates;
     private final Random random;
     
     public RandPositioner() {
@@ -22,40 +22,51 @@ public class RandPositioner implements VertexPositioner {
         return r;
     }
     
-    private double getCost(HashMap<String, Vec2> coordinates, Graph graph) {
+    private Segment2 edgeSegment(Graph.Edge e) {
+        return new Segment2(coordinates.get(e.v1), coordinates.get(e.v2));
+    }
+    
+    private double distCost(Graph graph) {
         double value = 0;
-        for (int i = 0; i < graph.vertices().size(); i++) {
-            for (int ii = i + 1; ii < graph.vertices().size(); ii++) {
-                value += 1. / coordinates.get(graph.vertices().get(i)).dist(coordinates.get(graph.vertices().get(ii)));
+        for (Graph.Edge e : graph.edges()) {
+            for (String v : graph.vertices()) {
+                if (e.isEndPoint(v)) continue;
+                value += 1. / edgeSegment(e).dist(coordinates.get(v));
             }
         }
+        return value;
+    }
+    private int crossings(Graph graph) {
+        int cross = 0;
         for (int i = 0; i < graph.edges().size(); i++) {
             for (int ii = i + 1; ii < graph.edges().size(); ii++) {
                 Graph.Edge e1 = graph.edges().get(i);
                 Graph.Edge e2 = graph.edges().get(ii);
                 if (e1.hasCommonEndPoint(e2)) continue;
-                Segment2 s1 = new Segment2(coordinates.get(e1.v1), coordinates.get(e1.v2));
-                Segment2 s2 = new Segment2(coordinates.get(e2.v1), coordinates.get(e2.v2));
-                if (s1.intersects(s2)) value += 5;
+                if (edgeSegment(e1).intersects(edgeSegment(e2))) cross++;
             }
         }
-        return value;
+        return cross;
     }
-    
+    private double getCost(Graph graph, double crossWeight) {
+        return distCost(graph) + (double) crossings(graph) * crossWeight;
+    }
     private void optimizeCoordinates(Graph graph) {
-        HashMap<String, Vec2> best;
+        long startTime = System.currentTimeMillis();
         // some magic constants here
         double bestVal = 1e9;
-        HashMap<String, Vec2> bestCoordinates;
+        HashMap<String, Vec2> bestCoordinates = new HashMap<>();
         for (int it = 0; it < 1000; it++) {
-            HashMap<String, Vec2> testCoordinates = randomCoordinates(graph.vertices());
-            double value = getCost(testCoordinates, graph);
+            coordinates = randomCoordinates(graph.vertices());
+            double value = getCost(graph, 100);
             if (value < bestVal) {
                 bestVal = value;
-                coordinates = testCoordinates;
+                bestCoordinates = coordinates;
             }
         }
+        coordinates = bestCoordinates;
         System.out.println("Best value " + bestVal);
+        System.out.println("Used " + (System.currentTimeMillis() - startTime) + " ms");
     }
     
     @Override
