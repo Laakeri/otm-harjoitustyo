@@ -4,4 +4,6 @@
 | :----:|:-----| :-----|
 | 9.4.  | 3    | koodasin |
 | 10.4. | 5    | koodasin |
-| yht   | 8    | 
+| 22.4. | 2    | lisäsin checkstylen ja tein arkkitehtuuri.md:n |
+| 23.4. | 5    | koodasin tiedoston avaamiseen ja solmujen siirtämiseen liittyviä juttuja |
+| yht   | 15    | 
