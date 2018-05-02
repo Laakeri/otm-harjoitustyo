@@ -7,4 +7,4 @@
 | 22.4. | 2    | lisäsin checkstylen ja tein arkkitehtuuri.md:n |
 | 23.4. | 5    | koodasin tiedoston avaamiseen ja solmujen siirtämiseen liittyviä juttuja |
 | 2.5.  | 5    | koodasin verkkojen muokkaamiseen liittyvää käyttöliittymää ja tein javadocin |
-| yht   | 15    | 
+| yht   | 20    | 
