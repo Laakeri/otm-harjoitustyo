@@ -123,7 +123,7 @@ public class Ui extends Application {
         graphDraw.setStyle("-fx-border-style: solid hidden hidden hidden;");
         Pane main = new VBox(toolBar, helpText, graphDraw);
         
-        stage.setScene(new Scene(main, 800, 650));
+        stage.setScene(new Scene(main, 800, 700));
         stage.show();
         
         graphPresentation = new GraphPresentation(new Graph(), new TrivialPositioner(), 800, 600);

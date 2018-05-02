@@ -21,7 +21,7 @@ public class Graph {
         public boolean equals(Object obj) {
             if (obj == null) return false;
             if (!Edge.class.isAssignableFrom(obj.getClass())) return false;
-            final Edge o = (Edge)obj;
+            final Edge o = (Edge) obj;
             return o.v1.equals(v1) && o.v2.equals(v2);
         }
         @Override

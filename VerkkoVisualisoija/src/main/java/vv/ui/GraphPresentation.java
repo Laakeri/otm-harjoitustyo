@@ -94,7 +94,7 @@ public class GraphPresentation {
             stack.setOnMouseClicked(e -> fn.accept(label));
         }
         public void removeOnClickEvent() {
-            stack.setOnMouseClicked(e -> {});
+            stack.setOnMouseClicked(e -> { });
         }
         public String label() {
             return label;
