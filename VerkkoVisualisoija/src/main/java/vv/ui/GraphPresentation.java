@@ -2,9 +2,10 @@ package vv.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
+import java.util.Optional;
+import java.util.function.Consumer;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -16,11 +17,11 @@ import vv.utils.Segment2;
 import vv.utils.Vec2;
 
 public class GraphPresentation {
-    private final Graph graph;
     private final VertexPositioner vertexPositioner;
     private final double width, height;
+    private final Graph graph;
     
-    public static final double VRADIUS = 30;
+    private static final double VRADIUS = 30;
     
     private final HashMap<String, VertexPresentation> vertices;
     private final ArrayList<EdgePresentation> edges;
@@ -29,12 +30,22 @@ public class GraphPresentation {
         private final Circle circle;
         private final Text text;
         private final StackPane stack;
-        private ArrayList<EdgePresentation> incident;
+        private final ArrayList<EdgePresentation> incident;
+        private final String label;
         private Vec2 pos;
-        private Vec2 dragOrgPos;
-        private Vec2 dragOrgTranslate;
+        private Vec2 orgPos;
+        private Vec2 orgTranslate;
+        private void initEvents() {
+            stack.setOnMousePressed(mouseEvent -> {
+                handlePress(mouseEvent);
+            });
+            stack.setOnMouseDragged(mouseEvent -> {
+                handleDrag(mouseEvent);
+            });
+        }
         VertexPresentation(Vec2 pos, String label) {
             this.pos = pos;
+            this.label = label;
             circle = new Circle(VRADIUS);
             circle.setStroke(Color.BLACK);
             circle.setFill(Color.WHITE);
@@ -45,12 +56,7 @@ public class GraphPresentation {
             stack.setTranslateY(pos.y - VRADIUS);
             stack.getChildren().addAll(circle, text);
             
-            stack.setOnMousePressed(mouseEvent -> {
-                handlePress(mouseEvent);
-            });
-            stack.setOnMouseDragged(mouseEvent -> {
-                handleDrag(mouseEvent);
-            });
+            initEvents();
             
             incident = new ArrayList<>();
         }
@@ -58,24 +64,25 @@ public class GraphPresentation {
             return new Vec2(e.getSceneX(), e.getSceneY());
         }
         private void handlePress(MouseEvent e) {
-            dragOrgPos = mouseEventPos(e);
-            dragOrgTranslate = new Vec2(stack.getTranslateX(), stack.getTranslateY());
+            orgPos = mouseEventPos(e);
+            orgTranslate = new Vec2(stack.getTranslateX(), stack.getTranslateY());
+        }
+        private void setTranslate(Vec2 t) {
+            stack.setTranslateX(t.x);
+            stack.setTranslateY(t.y);
         }
         private void handleDrag(MouseEvent e) {
-            Vec2 offset = mouseEventPos(e).sub(dragOrgPos);
-            Vec2 newTranslate = offset.add(dragOrgTranslate);
+            Vec2 offset = mouseEventPos(e).sub(orgPos);
+            Vec2 newTranslate = offset.add(orgTranslate);
             
             pos = new Vec2(newTranslate.x + VRADIUS, newTranslate.y + VRADIUS);
             
-            stack.setTranslateX(newTranslate.x);
-            stack.setTranslateY(newTranslate.y);
+            setTranslate(newTranslate);
             
-            for (EdgePresentation ep : incident) {
-                ep.updatePos();
-            }
+            incident.forEach(EdgePresentation::updatePos);
         }
-        public void addToGroup(Group group) {
-            group.getChildren().add(stack);
+        public void addToPane(Pane pane) {
+            pane.getChildren().add(stack);
         }
         public Vec2 pos() {
             return pos;
@@ -83,11 +90,22 @@ public class GraphPresentation {
         public void addIncident(EdgePresentation ep) {
             incident.add(ep);
         }
-    }
-    
-    private Vec2 getEndPoint(Vec2 p1, Vec2 p2) {
-        Segment2 sg = new Segment2(p1, p2);
-        return sg.interpolate(VRADIUS / p1.dist(p2));
+        public void addOnClickEvent(Consumer<String> fn) {
+            stack.setOnMouseClicked(e -> fn.accept(label));
+        }
+        public void removeOnClickEvent() {
+            stack.setOnMouseClicked(e -> {});
+        }
+        public String label() {
+            return label;
+        }
+        public void removeIncidentEdges() {
+            ArrayList<EdgePresentation> toRemove = new ArrayList<>(incident);
+            toRemove.forEach(ep -> ep.remove());
+        }
+        public ArrayList<EdgePresentation> incident() {
+            return incident;
+        }
     }
     
     private class EdgePresentation {
@@ -100,8 +118,8 @@ public class GraphPresentation {
             Vec2 ep2 = getEndPoint(v2.pos, v1.pos);
             line = new Line(ep1.x, ep1.y, ep2.x, ep2.y);
         }
-        public void addToGroup(Group group) {
-            group.getChildren().add(line);
+        public void addToPane(Pane pane) {
+            pane.getChildren().add(line);
         }
         public void updatePos() {
             Vec2 ep1 = getEndPoint(v1.pos, v2.pos);
@@ -111,10 +129,35 @@ public class GraphPresentation {
             line.setEndX(ep2.x);
             line.setEndY(ep2.y);
         }
+        public void remove() {
+            v1.incident().removeIf(ep -> ep == this);
+            v2.incident().removeIf(ep -> ep == this);
+            edges.remove(this);
+        }
+        public boolean isAdjacent(String v) {
+            return v1.label().equals(v) || v2.label().equals(v);
+        }
+    }
+    
+    private Vec2 getEndPoint(Vec2 p1, Vec2 p2) {
+        Segment2 sg = new Segment2(p1, p2);
+        return sg.interpolate(VRADIUS / p1.dist(p2));
     }
     
     private Vec2 nodeToScreen(Vec2 pos) {
         return new Vec2(VRADIUS + (width - 2 * VRADIUS) * pos.x, VRADIUS + (height - 2 * VRADIUS) * pos.y);
+    }
+    
+    private void initVertex(String vertex) {
+        Vec2 pos = nodeToScreen(vertexPositioner.position(vertex));
+        vertices.put(vertex, new VertexPresentation(pos, vertex));
+    }
+    
+    private void initEdge(Graph.Edge edge) {
+        EdgePresentation ep = new EdgePresentation(vertices.get(edge.v1), vertices.get(edge.v2));
+        edges.add(ep);
+        vertices.get(edge.v1).addIncident(ep);
+        vertices.get(edge.v2).addIncident(ep);
     }
     
     public GraphPresentation(Graph graph, VertexPositioner vertexPositioner, double width, double height) {
@@ -122,27 +165,60 @@ public class GraphPresentation {
         this.vertexPositioner = vertexPositioner;
         this.width = width;
         this.height = height;
-        vertexPositioner.loadGraph(graph);
         vertices = new HashMap<>();
-        for (String vertex : graph.vertices()) {
-            Vec2 pos = nodeToScreen(vertexPositioner.position(vertex));
-            vertices.put(vertex, new VertexPresentation(pos, vertex));
-        }
+        graph.vertices().forEach(this::initVertex);
         edges = new ArrayList<>();
-        for (Graph.Edge edge : graph.edges()) {
-            EdgePresentation ep = new EdgePresentation(vertices.get(edge.v1), vertices.get(edge.v2));
-            edges.add(ep);
-            vertices.get(edge.v1).addIncident(ep);
-            vertices.get(edge.v2).addIncident(ep);
+        graph.edges().forEach(this::initEdge);
+    }
+    public boolean hasVertex(String vertex) {
+        return vertices.containsKey(vertex);
+    }
+    public void addVertex(String vertex) {
+        vertexPositioner.addVertex(vertex, Vec2.unitRandom());
+        initVertex(vertex);
+    }
+    public void addEdge(String vertex1, String vertex2) {
+        Optional<Graph.Edge> added = graph.addEdge(vertex1, vertex2);
+        if (added.isPresent()) {
+            if (!hasVertex(vertex1)) addVertex(vertex1);
+            if (!hasVertex(vertex2)) addVertex(vertex2);
+            initEdge(added.get());
         }
     }
-    
-    void drawToGroup(Group group) {
-        for (EdgePresentation ep : edges) {
-            ep.addToGroup(group);
+    public void drawToPane(Pane pane) {
+        edges.forEach(ep -> ep.addToPane(pane));
+        vertices.values().forEach(vp -> vp.addToPane(pane));
+    }
+    public void addOnClickEvents(Consumer<String> fn) {
+        Consumer<String> resetAndDo = vertex -> {
+            resetOnClickEvents();
+            fn.accept(vertex);
+        };
+        vertices.values().forEach(vp -> {
+            vp.addOnClickEvent(resetAndDo);
+        });
+    }
+    private void resetOnClickEvents() {
+        vertices.values().forEach(vp -> vp.removeOnClickEvent());
+    }
+    public boolean removeVertex(String vertex) {
+        if (graph.removeVertex(vertex)) {
+            vertices.get(vertex).removeIncidentEdges();
+            vertices.remove(vertex);
+            return true;
+        } else {
+            return false;
         }
-        for (VertexPresentation vp : vertices.values()) {
-            vp.addToGroup(group);
+    }
+    public boolean removeEdge(String vertex1, String vertex2) {
+        if (graph.removeEdge(vertex1, vertex2)) {
+            for (EdgePresentation ep : edges) {
+                if (ep.isAdjacent(vertex1) && ep.isAdjacent(vertex2)) {
+                    ep.remove();
+                    return true;
+                }
+            }
         }
+        return false;
     }
 }

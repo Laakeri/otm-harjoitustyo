@@ -1,7 +1,11 @@
 package vv.utils;
 
+import java.util.Random;
+
 public class Vec2 {
     public final double x, y;
+    private static final Random random = new Random(System.currentTimeMillis());
+    
     public Vec2(double x, double y) {
         this.x = x;
         this.y = y;
@@ -46,5 +50,9 @@ public class Vec2 {
     @Override
     public String toString() {
         return "(" + x + ", " + y + ")";
+    }
+    
+    public static Vec2 unitRandom() {
+        return new Vec2(random.nextDouble(), random.nextDouble());
     }
 }

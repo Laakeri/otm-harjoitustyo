@@ -4,20 +4,18 @@ import vv.utils.Vec2;
 import vv.utils.Segment2;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 public class RandPositioner implements VertexPositioner {
     private HashMap<String, Vec2> coordinates;
-    private final Random random;
     
-    public RandPositioner() {
-        random = new Random(System.currentTimeMillis());
+    public RandPositioner(Graph graph) {
+        optimizeCoordinates(graph);
     }
     
     private HashMap<String, Vec2> randomCoordinates(ArrayList<String> vertices) {
         HashMap<String, Vec2> r = new HashMap<>();
         for (String vertex : vertices) {
-            r.put(vertex, new Vec2(random.nextDouble(), random.nextDouble()));
+            r.put(vertex, Vec2.unitRandom());
         }
         return r;
     }
@@ -75,7 +73,7 @@ public class RandPositioner implements VertexPositioner {
     }
     
     @Override
-    public void loadGraph(Graph graph) {
-        optimizeCoordinates(graph);
+    public void addVertex(String vertex, Vec2 position) {
+        coordinates.put(vertex, position);
     }
 }
