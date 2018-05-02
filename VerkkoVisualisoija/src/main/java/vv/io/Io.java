@@ -1,11 +1,12 @@
 package vv.io;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 import vv.domain.Graph;
 import java.util.ArrayList;
 
+/**
+ * Class for reading and writing graphs from files.
+ */
 public class Io {
     private static ArrayList<String> readLines(Scanner scanner) {
         ArrayList<String> lines = new ArrayList<>();
@@ -14,11 +15,9 @@ public class Io {
         }
         return lines;
     }
-    
     private static String[] tokens(String line) {
         return line.trim().split("\\s+");
     }
-    
     private static Graph readFormat1(ArrayList<String> lines) {
         Graph graph = new Graph();
         for (String line : lines) {
@@ -28,7 +27,6 @@ public class Io {
         }
         return graph;
     }
-    
     private static Graph readFormat2(ArrayList<String> lines) throws Exception {
         if (lines.size() > 0) {
             String[] pline = tokens(lines.get(0));
@@ -44,9 +42,14 @@ public class Io {
         }
         throw new Exception("Incorrect format");
     }
-    
-    public static Graph readGraph(File file) throws FileNotFoundException {
-        ArrayList<String> lines = readLines(new Scanner(file));
+    /**
+     * Reads a graph from given scanner. Supports 2 different formats and automatically
+     * deducts which is used.
+     * @param scanner Scanner to read the graph from
+     * @return The graph
+     */
+    public static Graph readGraph(Scanner scanner) {
+        ArrayList<String> lines = readLines(scanner);
         try {
             return readFormat2(lines);
         } catch (Exception e) { }

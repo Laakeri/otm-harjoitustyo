@@ -43,7 +43,7 @@ public class GraphPresentation {
                 handleDrag(mouseEvent);
             });
         }
-        VertexPresentation(Vec2 pos, String label) {
+        private VertexPresentation(Vec2 pos, String label) {
             this.pos = pos;
             this.label = label;
             circle = new Circle(VRADIUS);
@@ -81,29 +81,29 @@ public class GraphPresentation {
             
             incident.forEach(EdgePresentation::updatePos);
         }
-        public void addToPane(Pane pane) {
+        private void addToPane(Pane pane) {
             pane.getChildren().add(stack);
         }
-        public Vec2 pos() {
+        private Vec2 pos() {
             return pos;
         }
-        public void addIncident(EdgePresentation ep) {
+        private void addIncident(EdgePresentation ep) {
             incident.add(ep);
         }
-        public void addOnClickEvent(Consumer<String> fn) {
+        private void addOnClickEvent(Consumer<String> fn) {
             stack.setOnMouseClicked(e -> fn.accept(label));
         }
-        public void removeOnClickEvent() {
+        private void removeOnClickEvent() {
             stack.setOnMouseClicked(e -> { });
         }
-        public String label() {
+        private String label() {
             return label;
         }
-        public void removeIncidentEdges() {
+        private void removeIncidentEdges() {
             ArrayList<EdgePresentation> toRemove = new ArrayList<>(incident);
             toRemove.forEach(ep -> ep.remove());
         }
-        public ArrayList<EdgePresentation> incident() {
+        private ArrayList<EdgePresentation> incident() {
             return incident;
         }
     }
@@ -111,17 +111,17 @@ public class GraphPresentation {
     private class EdgePresentation {
         private final VertexPresentation v1, v2;
         private final Line line;
-        EdgePresentation(VertexPresentation v1, VertexPresentation v2) {
+        private EdgePresentation(VertexPresentation v1, VertexPresentation v2) {
             this.v1 = v1;
             this.v2 = v2;
             Vec2 ep1 = getEndPoint(v1.pos, v2.pos);
             Vec2 ep2 = getEndPoint(v2.pos, v1.pos);
             line = new Line(ep1.x, ep1.y, ep2.x, ep2.y);
         }
-        public void addToPane(Pane pane) {
+        private void addToPane(Pane pane) {
             pane.getChildren().add(line);
         }
-        public void updatePos() {
+        private void updatePos() {
             Vec2 ep1 = getEndPoint(v1.pos, v2.pos);
             Vec2 ep2 = getEndPoint(v2.pos, v1.pos);
             line.setStartX(ep1.x);
@@ -129,12 +129,12 @@ public class GraphPresentation {
             line.setEndX(ep2.x);
             line.setEndY(ep2.y);
         }
-        public void remove() {
+        private void remove() {
             v1.incident().removeIf(ep -> ep == this);
             v2.incident().removeIf(ep -> ep == this);
             edges.remove(this);
         }
-        public boolean isAdjacent(String v) {
+        private boolean isAdjacent(String v) {
             return v1.label().equals(v) || v2.label().equals(v);
         }
     }

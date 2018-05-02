@@ -5,13 +5,20 @@ import vv.utils.Segment2;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Loads a graph in the constructor and tries to position its vertices a way
+ * that would be clear to look at. Uses random sampling for this.
+ */
 public class RandPositioner implements VertexPositioner {
     private HashMap<String, Vec2> coordinates;
-    
+    /**
+     * Creates a VertexPositioner and uses a randomized algorithm for positioning
+     * the vertices of a given graph.
+     * @param graph The graph whose vertices should be positioned
+     */
     public RandPositioner(Graph graph) {
         optimizeCoordinates(graph);
     }
-    
     private HashMap<String, Vec2> randomCoordinates(ArrayList<String> vertices) {
         HashMap<String, Vec2> r = new HashMap<>();
         for (String vertex : vertices) {
@@ -19,11 +26,9 @@ public class RandPositioner implements VertexPositioner {
         }
         return r;
     }
-    
     private Segment2 edgeSegment(Graph.Edge e) {
         return new Segment2(coordinates.get(e.v1), coordinates.get(e.v2));
     }
-    
     private double distCost(Graph graph) {
         double value = 0;
         for (Graph.Edge e : graph.edges()) {
@@ -66,12 +71,20 @@ public class RandPositioner implements VertexPositioner {
         System.out.println("Best value " + bestVal);
         System.out.println("Used " + (System.currentTimeMillis() - startTime) + " ms");
     }
-    
+    /**
+     * Position of a given vertex in this positioner
+     * @param vertex Vertex of a graph
+     * @return Position of vertex. Vector whose components are between 0 and 1
+     */
     @Override
     public Vec2 position(String vertex) {
         return coordinates.get(vertex);
     }
-    
+    /**
+     * Set position of a vertex / add a new vertex and its position.
+     * @param vertex Vertex of a graph
+     * @param position Position of vertex. Both components are assumed to be between 0 and 1
+     */
     @Override
     public void addVertex(String vertex, Vec2 position) {
         coordinates.put(vertex, position);

@@ -3,6 +3,7 @@ package vv.ui;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.function.Consumer;
 import javafx.scene.control.Button;
 import javafx.application.Application;
@@ -40,7 +41,7 @@ public class Ui extends Application {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             try {
-                Graph graph = Io.readGraph(file);
+                Graph graph = Io.readGraph(new Scanner(file));
                 graphPresentation = new GraphPresentation(graph, new RandPositioner(graph), 800, 600);
                 refreshDraw();
                 setHelpText("Tiedosto avattu!");
