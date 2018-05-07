@@ -2,6 +2,7 @@ package vv.ui;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.function.Consumer;
@@ -26,28 +27,56 @@ public class Ui extends Application {
     private Pane graphDraw;
     private GraphPresentation graphPresentation;
     private Text helpText;
+    static final int WINDOWWIDTH = 1000;
+    static final int UIHEIGHT = 80;
+    static final int WINDOWHEIGHT = 700;
     
     @Override
     public void init() {
         
     }
-    
     private void refreshDraw() {
         graphDraw.getChildren().clear();
         graphPresentation.drawToPane(graphDraw);
     }
-    
-    private void openGraph(Stage stage, FileChooser fileChooser) {
+    private void openGraph(Stage stage) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Avaa");
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             try {
-                Graph graph = Io.readGraph(new Scanner(file));
-                graphPresentation = new GraphPresentation(graph, new RandPositioner(graph), 800, 600);
-                refreshDraw();
-                setHelpText("Tiedosto avattu!");
+                Scanner sc = new Scanner(file);
+                try {
+                    Io.ReadResult res = Io.readGraph(sc);
+                    if (res.graph.isPresent()) {
+                        if (res.vertexPositioner.isPresent()) {
+                            graphPresentation = new GraphPresentation(res.graph.get(), res.vertexPositioner.get(), WINDOWWIDTH, WINDOWHEIGHT - UIHEIGHT);
+                        } else {
+                            graphPresentation = new GraphPresentation(res.graph.get(), new RandPositioner(res.graph.get()), WINDOWWIDTH, WINDOWHEIGHT - UIHEIGHT);
+                        }
+                        refreshDraw();
+                    }
+                    setHelpText(res.errorMessage);
+                } catch (Exception e) {
+                    setHelpText(e.getMessage());
+                }
             } catch (FileNotFoundException ex) { 
-                System.out.println("File not found: " + ex.getMessage() + "\nThis should not happen");
-                System.exit(2);
+                setHelpText("File not found: " + ex.getMessage() + ". This should not happen");
+            }
+        }
+    }
+    private void saveGraph(Stage stage) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Tallenna");
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null) {
+            try {
+                PrintWriter pw = new PrintWriter(file);
+                Io.writeGraph(pw, graphPresentation.graph(), graphPresentation.vertexPositioner());
+                pw.close();
+                setHelpText("Tallennettu");
+            } catch (FileNotFoundException ex) {
+                setHelpText("File not found: " + ex.getMessage() + ". This should not happen");
             }
         }
     }
@@ -69,7 +98,7 @@ public class Ui extends Application {
                 refreshDraw();
                 setHelpText("Solmu " + vertex + " lisätty!");
             } else {
-                setHelpText("Solmu " + vertex + " on jo olemassa");
+                setHelpText("Solmu " + vertex + " on jo olemassa!");
             }
         });
     }
@@ -78,9 +107,12 @@ public class Ui extends Application {
         graphPresentation.addOnClickEvents(vertex1 -> {
             setHelpText("Klikkaa toista solmua");
             graphPresentation.addOnClickEvents(vertex2 -> {
-                graphPresentation.addEdge(vertex1, vertex2);
-                refreshDraw();
-                setHelpText("Kaari " + vertex1 + " - " + vertex2 + " lisätty!");
+                if (graphPresentation.addEdge(vertex1, vertex2)) {
+                    refreshDraw();  
+                    setHelpText("Kaari " + vertex1 + " - " + vertex2 + " lisätty!");
+                } else {
+                    setHelpText("Virhe kaaren lisäyksessä!");
+                }
             });
         });
     }
@@ -97,41 +129,57 @@ public class Ui extends Application {
         graphPresentation.addOnClickEvents(vertex1 -> {
             setHelpText("Klikkaa toista solmua");
             graphPresentation.addOnClickEvents(vertex2 -> {
-                graphPresentation.removeEdge(vertex1, vertex2);
-                refreshDraw();
-                setHelpText("Kaari " + vertex1 + " - " + vertex2 + " poistettu!");
+                if (graphPresentation.removeEdge(vertex1, vertex2)) {
+                    refreshDraw();
+                    setHelpText("Kaari " + vertex1 + " - " + vertex2 + " poistettu!");
+                } else {
+                    setHelpText("Virhe kaaren poistamisessa!");
+                }
             });
         });
     }
     private void setHelpText(String text) {
         helpText.setText(text);
     }
+    private void resetGraph() {
+        graphPresentation = new GraphPresentation(new Graph(), new TrivialPositioner(), WINDOWWIDTH, WINDOWHEIGHT - UIHEIGHT);
+        refreshDraw();
+    }
+    private void uiResetGraph() {
+        resetGraph();
+        setHelpText("Näkymä tyhjennetty!");
+    }
+    private void repositionGraph() {
+        graphPresentation.reposition(new RandPositioner(graphPresentation.graph()));
+        refreshDraw();
+        setHelpText("Aseteltu uudelleen!");
+    }
     @Override
     public void start(Stage stage) {
         System.out.println("sovellus käynnistyy");
         stage.setTitle("Verkkovisualisoija");
-        FileChooser fileChooser = new FileChooser();
         Button openButton = new Button("Avaa tiedosto");
         Button saveButton = new Button("Tallenna");
         Button newVertexButton = new Button("Uusi solmu");
         Button newEdgeButton = new Button("Uusi kaari");
         Button removeVertexButton = new Button("Poista solmu");
         Button removeEdgeButton = new Button("Poista kaari");
-        Pane toolBar = new HBox(20, openButton, saveButton, newVertexButton, newEdgeButton, removeVertexButton, removeEdgeButton);
+        Button repositionButton = new Button("Asettele uudelleen");
+        Button resetButton = new Button("Tyhjennä");
+        Pane toolBar = new HBox(20, openButton, saveButton, newVertexButton, newEdgeButton, removeVertexButton, removeEdgeButton, repositionButton, resetButton);
         toolBar.setPadding(new Insets(5, 10, 20, 10));
         helpText = new Text("Tervetuloa! Voit aloittaa avaamalla tiedoston tai suoraan luomalla uusia solmuja.");
         graphDraw = new Pane();
         graphDraw.setStyle("-fx-border-style: solid hidden hidden hidden;");
         Pane main = new VBox(toolBar, helpText, graphDraw);
-        
-        stage.setScene(new Scene(main, 800, 700));
+        stage.setScene(new Scene(main, WINDOWWIDTH, WINDOWHEIGHT));
         stage.show();
-        
-        graphPresentation = new GraphPresentation(new Graph(), new TrivialPositioner(), 800, 600);
-        refreshDraw();
-        
+        resetGraph();
         openButton.setOnAction(e -> {
-            openGraph(stage, fileChooser);
+            openGraph(stage);
+        });
+        saveButton.setOnAction(e -> {
+            saveGraph(stage);
         });
         newVertexButton.setOnAction(e -> {
             addVertex();
@@ -145,13 +193,17 @@ public class Ui extends Application {
         removeEdgeButton.setOnAction(e -> {
             removeEdge();
         });
+        repositionButton.setOnAction(e -> {
+            repositionGraph();
+        });
+        resetButton.setOnAction(e -> {
+            uiResetGraph();
+        });
     }
-  
     @Override
     public void stop() {
         System.out.println("sovellus sulkeutuu");
     }
-  
     public static void main(String[] args) {
         launch(args);
     }

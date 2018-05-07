@@ -17,11 +17,12 @@ import vv.utils.Segment2;
 import vv.utils.Vec2;
 
 public class GraphPresentation {
-    private final VertexPositioner vertexPositioner;
+    private VertexPositioner vertexPositioner;
     private final double width, height;
     private final Graph graph;
     
     private static final double VRADIUS = 30;
+    private static final Vec2 RADIUSOFFSET = new Vec2(VRADIUS, VRADIUS);
     
     private final HashMap<String, VertexPresentation> vertices;
     private final ArrayList<EdgePresentation> edges;
@@ -52,8 +53,7 @@ public class GraphPresentation {
             text = new Text(label);
             
             stack = new StackPane();
-            stack.setTranslateX(pos.x - VRADIUS);
-            stack.setTranslateY(pos.y - VRADIUS);
+            refreshTranslate();
             stack.getChildren().addAll(circle, text);
             
             initEvents();
@@ -67,17 +67,18 @@ public class GraphPresentation {
             orgPos = mouseEventPos(e);
             orgTranslate = new Vec2(stack.getTranslateX(), stack.getTranslateY());
         }
-        private void setTranslate(Vec2 t) {
-            stack.setTranslateX(t.x);
-            stack.setTranslateY(t.y);
+        private void refreshTranslate() {
+            Vec2 rpos = pos.sub(RADIUSOFFSET);
+            stack.setTranslateX(rpos.x);
+            stack.setTranslateY(rpos.y);
         }
         private void handleDrag(MouseEvent e) {
             Vec2 offset = mouseEventPos(e).sub(orgPos);
             Vec2 newTranslate = offset.add(orgTranslate);
             
-            pos = new Vec2(newTranslate.x + VRADIUS, newTranslate.y + VRADIUS);
-            
-            setTranslate(newTranslate);
+            pos = newTranslate.add(RADIUSOFFSET);
+            vertexPositioner.addVertex(label, screenToPos(pos));
+            refreshTranslate();
             
             incident.forEach(EdgePresentation::updatePos);
         }
@@ -105,6 +106,10 @@ public class GraphPresentation {
         }
         private ArrayList<EdgePresentation> incident() {
             return incident;
+        }
+        private void resetPosition() {
+            this.pos = posToScreen(vertexPositioner.position(label));
+            refreshTranslate();
         }
     }
     
@@ -144,12 +149,16 @@ public class GraphPresentation {
         return sg.interpolate(VRADIUS / p1.dist(p2));
     }
     
-    private Vec2 nodeToScreen(Vec2 pos) {
+    private Vec2 posToScreen(Vec2 pos) {
         return new Vec2(VRADIUS + (width - 2 * VRADIUS) * pos.x, VRADIUS + (height - 2 * VRADIUS) * pos.y);
     }
     
+    private Vec2 screenToPos(Vec2 pos) {
+        return new Vec2((pos.x - VRADIUS) / (width - 2 * VRADIUS), (pos.y - VRADIUS) / (height - 2 * VRADIUS));
+    }
+    
     private void initVertex(String vertex) {
-        Vec2 pos = nodeToScreen(vertexPositioner.position(vertex));
+        Vec2 pos = posToScreen(vertexPositioner.position(vertex));
         vertices.put(vertex, new VertexPresentation(pos, vertex));
     }
     
@@ -177,12 +186,15 @@ public class GraphPresentation {
         vertexPositioner.addVertex(vertex, Vec2.unitRandom());
         initVertex(vertex);
     }
-    public void addEdge(String vertex1, String vertex2) {
+    public boolean addEdge(String vertex1, String vertex2) {
         Optional<Graph.Edge> added = graph.addEdge(vertex1, vertex2);
         if (added.isPresent()) {
             if (!hasVertex(vertex1)) addVertex(vertex1);
             if (!hasVertex(vertex2)) addVertex(vertex2);
             initEdge(added.get());
+            return true;
+        } else {
+            return false;
         }
     }
     public void drawToPane(Pane pane) {
@@ -220,5 +232,20 @@ public class GraphPresentation {
             }
         }
         return false;
+    }
+    public void reposition(VertexPositioner vertexPositioner) {
+        this.vertexPositioner = vertexPositioner;
+        vertices.values().forEach(vp -> {
+            vp.resetPosition();
+        });
+        edges.forEach(ep -> {
+            ep.updatePos();
+        });
+    }
+    public Graph graph() {
+        return graph;
+    }
+    public VertexPositioner vertexPositioner() {
+        return vertexPositioner;
     }
 }
