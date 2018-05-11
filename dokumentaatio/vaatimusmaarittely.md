@@ -10,12 +10,8 @@ Samalla tavalla hyötyä olisi enemmän ammattimaisissa tilanteissa kun verkkoal
 
 * Ohjelma lukee verkon kuvauksen tiedostosta ja piirtää sen jollain tavalla näytölle
 * Käyttäjä voi itse asetella verkon solmujen sijainteja näytöllä että kuvasta tulee yleiskatsauksellisempi
-* Tiedostoon voidaan tallentaa solmujen sijoittelu näytöllä ja tiedosto voidaan ladata (hyödyllistä olisi myös tikz verkkokuvauksen exporttaaminen)
-* Verkon solmuja ja kaaria voi nimetä
+* Tiedostoon voidaan tallentaa solmujen sijoittelu näytöllä ja tiedosto voidaan ladata
+* Verkon solmuja voi nimetä
 * Käyttäjä voi itse muokata verkkoa
-
-### Lisätoiminnallisuuksia
-
-* Ohjelma tukee mahdollisimman monia eri tiedostoformaatteja
-* Heuristiikkoja verkon piirtämiseen näytölle voi parantaa niin paljon kuin haluaa, mutta tämä on algoritminen ongelma joka ei välttämättä kuulu tälle kurssille
-* Grafiikkaa voi parantaa
+* Ohjelma tukee useaa eri tiedostomuotoa
+* Hyvä asettelu verkolle lasketaan kokeilemalla useita satunnaisia asetteluja ja valitsemalla paras niistä. Tämä on huono algoritmi isoille verkoille, mutta jos verkon koko on alle 10 solmua se voi toimia ihan hyvin.
