@@ -52,6 +52,10 @@ public class Graph {
             hash = 97 * hash + Objects.hashCode(this.v2);
             return hash;
         }
+        @Override
+        public String toString() {
+            return "("+v1+" - "+v2+")";
+        }
         /**
          * Is a given vertex an endpoint of this.
          * @param v A vertex

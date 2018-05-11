@@ -112,9 +112,8 @@ public class Io {
      * deducts which is used. Supports also reading the vertex positioning.
      * @param scanner Scanner to read the graph from
      * @return ReadResult object. 
-     * @throws java.lang.Exception
      */
-    public static ReadResult readGraph(Scanner scanner) throws Exception {
+    public static ReadResult readGraph(Scanner scanner) {
         ArrayList<String> lines = readLines(scanner);
         try {
             Graph graph = readFormat2(lines);
