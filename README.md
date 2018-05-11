@@ -10,6 +10,8 @@ Tarkoituksena on luoda sovellus jolla voi piirtää verkkoja helposti ja erityis
 
 [Käyttöohje](https://github.com/Laakeri/otm-harjoitustyo/blob/master/dokumentaatio/kayttoohje.md)
 
+[Testausdokumentti](https://github.com/Laakeri/otm-harjoitustyo/blob/master/dokumentaatio/testausdokumentti.md)
+
 ## Releaset
 
 [Viikko 5](https://github.com/Laakeri/otm-harjoitustyo/releases/tag/Viikko5)
