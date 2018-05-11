@@ -1,10 +1,14 @@
 package vv.io;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Scanner;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import vv.domain.Graph;
+import vv.domain.TrivialPositioner;
 import vv.domain.VertexPositioner;
+import vv.utils.Vec2;
 
 public class IoTest {
     private Io.ReadResult readInput(String input) {
@@ -62,5 +66,21 @@ public class IoTest {
         assertEquals(false, res.graph.isPresent());
         assertEquals(false, res.vertexPositioner.isPresent());
         assertEquals("Väärä tiedostomuoto", res.errorMessage);
+    }
+    
+    @Test
+    public void saveGraphTest() {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        Graph g = new Graph();
+        g.addEdge("a", "b");
+        g.addEdge("c", "b");
+        g.addEdge("b", "a");
+        VertexPositioner vp = new TrivialPositioner();
+        vp.addVertex("a", new Vec2(0.2, 0.1));
+        vp.addVertex("b", new Vec2(0.3, 0.6));
+        vp.addVertex("c", new Vec2(0.5, 0.8));
+        Io.writeGraph(pw, g, vp);
+        assertEquals("p 3 2\nc a 0.2 0.1\nc b 0.3 0.6\nc c 0.5 0.8\ne a b\ne b c\n", sw.toString());
     }
 }
