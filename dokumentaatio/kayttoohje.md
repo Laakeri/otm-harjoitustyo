@@ -12,7 +12,7 @@ java -jar VerkkoVisualisoija.jar
 
 # Ohjelman käyttäminen
 
-Avaa tiedosto -toiminnolla voit lukea verkon kuvauksen tiedostosta. Yksi tuetuista tiedostomuodoista näyttää tältä:
+Avaa tiedosto -toiminnolla voit lukea verkon kuvauksen tiedostosta. Kansiossa examplegraphs on esimerkkejä tuetuista tiedostomuodoista. Yksi tuetuista tiedostomuodoista näyttää tältä:
 ```
 e: a b
 e: a c
