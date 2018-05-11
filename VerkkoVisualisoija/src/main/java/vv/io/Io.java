@@ -77,6 +77,12 @@ public class Io {
             throw new Exception("Incorrect format");
         }
     }
+    /**
+     * Writes the graph and the vertexpositioner into the printwriter
+     * @param writer PrintWriter to write the data in
+     * @param graph The graph to save
+     * @param vertexPositioner The vertex positions to save
+     */
     public static void writeGraph(PrintWriter writer, Graph graph, VertexPositioner vertexPositioner) {
         writer.println("p " + graph.vertices().size() + " " + graph.edges().size());
         graph.vertices().forEach(v -> {
@@ -87,6 +93,9 @@ public class Io {
             writer.println("e " + e.v1 + " " + e.v2);
         });
     }
+    /**
+     * Represents the return value of reading a file.
+     */
     public static class ReadResult {
         public final Optional<Graph> graph;
         public final Optional<VertexPositioner> vertexPositioner;
