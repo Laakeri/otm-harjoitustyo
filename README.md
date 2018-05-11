@@ -13,3 +13,7 @@ Tarkoituksena on luoda sovellus jolla voi piirtää verkkoja helposti ja erityis
 ## Releaset
 
 [Viikko 5](https://github.com/Laakeri/otm-harjoitustyo/releases/tag/Viikko5)
+
+[Viikko 6](https://github.com/Laakeri/otm-harjoitustyo/releases/tag/Viikko6)
+
+[Loppupalautus](https://github.com/Laakeri/otm-harjoitustyo/releases/tag/loppupalautus)
